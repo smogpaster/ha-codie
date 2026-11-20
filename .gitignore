@@ -1,0 +1,6 @@
+# Vendor API documentation (beta, not for redistribution)
+docs/
+__pycache__/
+*.pyc
+.DS_Store
+credentials*.json

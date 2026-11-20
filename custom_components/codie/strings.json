@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect Codie",
+        "description": "Enter the address of your Codie. The device must be switched on, unlocked and logged in. A pairing code will appear on its display.",
+        "data": { "host": "Host / IP address", "port": "Port" },
+        "data_description": { "host": "IP address of Codie in your network, e.g. 192.168.178.112.", "port": "Local API port, default 8081." }
+      },
+      "pair": {
+        "title": "Enter pairing code",
+        "description": "Codie at {host} now shows a six-digit code. Enter it within 5 minutes.",
+        "data": { "pairing_code": "Pairing code" }
+      },
+      "reauth_confirm": {
+        "title": "Pair Codie again",
+        "description": "Codie at {host} rejected the stored credentials. Submit to show a new pairing code on the device."
+      }
+    },
+    "error": {
+      "cannot_connect": "Cannot reach Codie. Check IP address, port and network.",
+      "not_logged_in": "Codie is not logged in to a user account.",
+      "pairing_rejected": "Codie rejected the pairing request. Wake and unlock the device and try again.",
+      "invalid_code": "The pairing code is wrong.",
+      "code_expired": "The code has expired. A new code is now shown on the device."
+    },
+    "abort": {
+      "already_configured": "This Codie is already configured.",
+      "reauth_successful": "Codie was paired again.",
+      "wrong_device": "These credentials belong to a different Codie.",
+      "signature_failed": "Pairing succeeded, but signed requests are rejected. Check the clock of Home Assistant and the device."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "online": { "name": "Online" },
+      "executor": { "name": "Tool executor connected" }
+    },
+    "sensor": {
+      "character_slot": { "name": "Character slot" }
+    }
+  },
+  "selector": {
+    "fit": { "options": { "contain": "Contain (whole image)", "cover": "Cover (fill, crop)", "stretch": "Stretch" } }
+  },
+  "services": {
+    "say": {
+      "name": "Say",
+      "description": "Codie reads a text aloud in the current character's voice (no AI answer, not stored in chat history).",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Device to use. Optional when only one Codie is set up." },
+        "text": { "name": "Text", "description": "Text to speak (1–16000 characters)." },
+        "wait": { "name": "Wait until finished", "description": "Wait until the device finished speaking (max. 3 minutes)." }
+      }
+    },
+    "notify": {
+      "name": "Notify",
+      "description": "Queue a short message that Codie speaks when idle; it is stored in the chat history.",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Device to use. Optional when only one Codie is set up." },
+        "text": { "name": "Text", "description": "Message (1–200 characters)." }
+      }
+    },
+    "show_image": {
+      "name": "Show image",
+      "description": "Show a JPEG or PNG image full screen on Codie.",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Device to use. Optional when only one Codie is set up." },
+        "url": { "name": "URL", "description": "Image URL (http/https). Either URL or path." },
+        "path": { "name": "Path", "description": "Local file path, must be in allowlist_external_dirs (e.g. /config/www or /media)." },
+        "duration": { "name": "Duration", "description": "Seconds to show the image. Without a value it stays until replaced." },
+        "fit": { "name": "Fit", "description": "How the image is scaled." }
+      }
+    }
+  },
+  "exceptions": {
+    "entry_not_found": { "message": "Codie entry {entry} not found." },
+    "entry_not_loaded": { "message": "No Codie is set up or loaded." },
+    "entry_required": { "message": "Several Codies are set up; select one with config_entry_id." },
+    "auth_failed": { "message": "Codie rejected the credentials, please pair again: {error}" },
+    "device_error": { "message": "Codie reported an error: {error}" },
+    "say_failed": { "message": "Speech output failed: {error}" },
+    "unsupported_image": { "message": "Only JPEG and PNG images are supported." },
+    "image_too_large": { "message": "The image is larger than 8 MiB." },
+    "image_download_failed": { "message": "Image could not be downloaded: {error}" },
+    "path_not_allowed": { "message": "Path {path} is not in allowlist_external_dirs." },
+    "path_not_readable": { "message": "File {path} cannot be read." },
+    "media_busy": { "message": "Codie cannot show the image right now: {error}" }
+  }
+}

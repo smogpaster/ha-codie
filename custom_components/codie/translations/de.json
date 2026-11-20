@@ -1,0 +1,90 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Codie verbinden",
+        "description": "Gib die Adresse deines Codie ein. Das Gerät muss eingeschaltet, entsperrt und angemeldet sein. Auf dem Display erscheint dann ein Kopplungscode.",
+        "data": { "host": "Host / IP-Adresse", "port": "Port" },
+        "data_description": { "host": "IP-Adresse des Codie im Netzwerk, z. B. 192.168.178.112.", "port": "Port der lokalen API, Standard 8081." }
+      },
+      "pair": {
+        "title": "Kopplungscode eingeben",
+        "description": "Codie unter {host} zeigt jetzt einen sechsstelligen Code an. Gib ihn innerhalb von 5 Minuten ein.",
+        "data": { "pairing_code": "Kopplungscode" }
+      },
+      "reauth_confirm": {
+        "title": "Codie neu koppeln",
+        "description": "Codie unter {host} hat die gespeicherten Zugangsdaten abgelehnt. Nach dem Absenden erscheint ein neuer Kopplungscode auf dem Gerät."
+      }
+    },
+    "error": {
+      "cannot_connect": "Codie ist nicht erreichbar. IP-Adresse, Port und Netzwerk prüfen.",
+      "not_logged_in": "Codie ist bei keinem Benutzerkonto angemeldet.",
+      "pairing_rejected": "Codie hat die Kopplung abgelehnt. Gerät aufwecken und entsperren, dann erneut versuchen.",
+      "invalid_code": "Der Kopplungscode ist falsch.",
+      "code_expired": "Der Code ist abgelaufen. Auf dem Gerät wird jetzt ein neuer Code angezeigt."
+    },
+    "abort": {
+      "already_configured": "Dieser Codie ist bereits eingerichtet.",
+      "reauth_successful": "Codie wurde neu gekoppelt.",
+      "wrong_device": "Diese Zugangsdaten gehören zu einem anderen Codie.",
+      "signature_failed": "Kopplung erfolgreich, aber signierte Anfragen werden abgelehnt. Uhrzeit von Home Assistant und Gerät prüfen."
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "online": { "name": "Online" },
+      "executor": { "name": "Tool-Executor verbunden" }
+    },
+    "sensor": {
+      "character_slot": { "name": "Charakter-Slot" }
+    }
+  },
+  "selector": {
+    "fit": { "options": { "contain": "Einpassen (ganzes Bild)", "cover": "Füllen (beschneiden)", "stretch": "Strecken" } }
+  },
+  "services": {
+    "say": {
+      "name": "Sprechen",
+      "description": "Codie liest einen Text mit der Stimme des aktuellen Charakters vor (keine KI-Antwort, kein Chatverlauf).",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Zu verwendendes Gerät. Optional, wenn nur ein Codie eingerichtet ist." },
+        "text": { "name": "Text", "description": "Vorzulesender Text (1–16000 Zeichen)." },
+        "wait": { "name": "Bis zum Ende warten", "description": "Warten, bis das Gerät fertig gesprochen hat (max. 3 Minuten)." }
+      }
+    },
+    "notify": {
+      "name": "Benachrichtigen",
+      "description": "Kurze Nachricht in die Warteschlange stellen; Codie spricht sie, sobald er frei ist, und speichert sie im Chatverlauf.",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Zu verwendendes Gerät. Optional, wenn nur ein Codie eingerichtet ist." },
+        "text": { "name": "Text", "description": "Nachricht (1–200 Zeichen)." }
+      }
+    },
+    "show_image": {
+      "name": "Bild anzeigen",
+      "description": "Ein JPEG- oder PNG-Bild im Vollbild auf Codie anzeigen.",
+      "fields": {
+        "config_entry_id": { "name": "Codie", "description": "Zu verwendendes Gerät. Optional, wenn nur ein Codie eingerichtet ist." },
+        "url": { "name": "URL", "description": "Bild-URL (http/https). Entweder URL oder Pfad." },
+        "path": { "name": "Pfad", "description": "Lokaler Dateipfad, muss in allowlist_external_dirs liegen (z. B. /config/www oder /media)." },
+        "duration": { "name": "Dauer", "description": "Anzeigedauer in Sekunden. Ohne Angabe bleibt das Bild, bis es ersetzt wird." },
+        "fit": { "name": "Skalierung", "description": "Wie das Bild eingepasst wird." }
+      }
+    }
+  },
+  "exceptions": {
+    "entry_not_found": { "message": "Codie-Eintrag {entry} nicht gefunden." },
+    "entry_not_loaded": { "message": "Kein Codie eingerichtet oder geladen." },
+    "entry_required": { "message": "Mehrere Codies eingerichtet; bitte mit config_entry_id auswählen." },
+    "auth_failed": { "message": "Codie hat die Zugangsdaten abgelehnt, bitte neu koppeln: {error}" },
+    "device_error": { "message": "Codie meldet einen Fehler: {error}" },
+    "say_failed": { "message": "Sprachausgabe fehlgeschlagen: {error}" },
+    "unsupported_image": { "message": "Nur JPEG- und PNG-Bilder werden unterstützt." },
+    "image_too_large": { "message": "Das Bild ist größer als 8 MiB." },
+    "image_download_failed": { "message": "Bild konnte nicht geladen werden: {error}" },
+    "path_not_allowed": { "message": "Pfad {path} liegt nicht in allowlist_external_dirs." },
+    "path_not_readable": { "message": "Datei {path} kann nicht gelesen werden." },
+    "media_busy": { "message": "Codie kann das Bild gerade nicht anzeigen: {error}" }
+  }
+}

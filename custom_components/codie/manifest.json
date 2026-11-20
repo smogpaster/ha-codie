@@ -1,0 +1,14 @@
+{
+  "domain": "codie",
+  "name": "Codie (CODE27)",
+  "after_dependencies": ["conversation"],
+  "codeowners": ["@smogpaster"],
+  "config_flow": true,
+  "dependencies": ["homeassistant"],
+  "documentation": "https://github.com/smogpaster/ha-codie",
+  "integration_type": "device",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/smogpaster/ha-codie/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}

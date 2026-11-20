@@ -1,0 +1,16 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "online": { "default": "mdi:robot-happy-outline" },
+      "executor": { "default": "mdi:tools" }
+    },
+    "sensor": {
+      "character_slot": { "default": "mdi:account-box-outline" }
+    }
+  },
+  "services": {
+    "say": { "service": "mdi:account-voice" },
+    "notify": { "service": "mdi:message-badge-outline" },
+    "show_image": { "service": "mdi:image-outline" }
+  }
+}
