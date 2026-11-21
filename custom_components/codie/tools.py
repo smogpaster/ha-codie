@@ -99,7 +99,8 @@ def _t(hass: HomeAssistant, key: str, **kwargs: Any) -> str:
 
 
 # ---------------------------------------------------------------- resolution
-_UMLAUTS = str.maketrans({"ä": "ae", "ö": "oe", "ü": "ue", "ß": "ss"})
+# Fold umlauts the same way HA builds entity_ids (Büro -> buro), so names and ids agree.
+_UMLAUTS = str.maketrans({"ä": "a", "ö": "o", "ü": "u", "ß": "ss"})
 _FILLER = {"der", "die", "das", "den", "dem", "des", "the", "im", "in", "am", "an", "vom", "von", "bitte", "mal"}
 
 
@@ -113,7 +114,24 @@ def _tokens(text: str) -> set[str]:
     return {tok for tok in _norm(text).split() if tok not in _FILLER}
 
 
-_GENERIC = {"licht", "light", "lampe", "lamp", "leuchte", "beleuchtung", "geraet", "device"}
+_GENERIC = {"licht", "lichter", "light", "lampe", "lamp", "leuchte", "beleuchtung", "gerat", "device"}
+
+
+def _strip_generic(tokens: set[str]) -> set[str]:
+    """Drop generic words, also inside German compounds ("burolicht" -> "buro")."""
+    result = set()
+    for tok in tokens:
+        if tok in _GENERIC:
+            continue
+        for word in _GENERIC:
+            if tok.endswith(word) and len(tok) - len(word) >= 3:
+                tok = tok[: -len(word)]
+                break
+            if tok.startswith(word) and len(tok) - len(word) >= 3:
+                tok = tok[len(word):]
+                break
+        result.add(tok)
+    return result
 
 
 def _tokens_match(query_tokens: set[str], name: str) -> bool:
@@ -164,11 +182,15 @@ def _resolve(hass: HomeAssistant, query: str, domains: set[str] | None) -> Match
         target = exposed if async_should_expose(hass, ASSISTANT, state.entity_id) else hidden
         target.append((state, _names_for(hass, state)))
 
+    stripped = _strip_generic(query_tokens)
+    variants = [query_norm, " ".join(sorted(stripped))] if stripped else [query_norm]
+
     def find(pool: list[tuple[State, set[str]]]) -> list[State]:
-        exact = [s for s, names in pool if query_norm in names]
-        if exact:
-            return exact
-        for tokens in (query_tokens, query_tokens - _GENERIC):
+        for variant in variants:
+            exact = [s for s, names in pool if variant in names]
+            if exact:
+                return exact
+        for tokens in (query_tokens, stripped):
             if not tokens:
                 continue
             contains = [s for s, names in pool if any(_tokens_match(tokens, name) for name in names)]

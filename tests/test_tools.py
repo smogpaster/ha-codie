@@ -75,3 +75,17 @@ async def test_generic_words(hass: HomeAssistant) -> None:
     r = await async_handle_tool(hass, "ha_get_state", {"entity": "Licht im Wohnzimmer"})
     assert r.status == "succeeded" and r.data["entity_id"] == "light.wohnzimmer", r
     print(r.data["speech"])
+
+
+async def test_compound_names(hass: HomeAssistant) -> None:
+    await _setup(hass)
+    hass.states.async_set("light.buro", "on", {"friendly_name": "Büro"})
+    hass.states.async_set("light.jetstrom_buro", "off", {"friendly_name": "JETSTROM Büro"})
+    for entity_id in ("light.buro", "light.jetstrom_buro"):
+        async_expose_entity(hass, "conversation", entity_id, True)
+    for query in ("Bürolicht", "Licht im Büro", "Büro", "light.buro", "Bürolampe"):
+        r = await async_handle_tool(hass, "ha_get_state", {"entity": query})
+        assert r.status == "succeeded" and r.data["entity_id"] == "light.buro", (query, r)
+    r = await async_handle_tool(hass, "ha_get_state", {"entity": "Jetstrom"})
+    assert r.data["entity_id"] == "light.jetstrom_buro", r
+    print(r.data["speech"])
